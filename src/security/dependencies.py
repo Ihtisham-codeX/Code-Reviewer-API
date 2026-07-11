@@ -1,5 +1,6 @@
-from fastapi import Cookie, HTTPException
+from fastapi import Cookie
 from src.security.jwt import verify_access_token
+from src.exceptions.handlers import LoginRequiredException, InvalidAccessTokenException
 
 
 # Called whenever a route uses Depends(get_current_user)
@@ -8,17 +9,11 @@ from src.security.jwt import verify_access_token
 def get_current_user(access_token: str = Cookie(None)):
 
     if access_token is None:
-        raise HTTPException(
-            status_code=401,
-            detail="Login Required"
-        )
+        raise LoginRequiredException()
 
     payload = verify_access_token(access_token)
 
     if payload is None:
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid or Expired Token"
-        )
+        raise InvalidAccessTokenException()
 
     return payload

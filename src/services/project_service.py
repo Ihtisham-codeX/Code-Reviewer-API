@@ -1,5 +1,5 @@
-from fastapi import HTTPException
 from src.respositories import project_repo
+from src.exceptions.handlers import ProjectNotFoundException, UnauthorizedProjectAccessException
 
 
 ########################### GET ALL PROJECTS ###########################
@@ -26,16 +26,10 @@ def delete_project(project_id: int, user_id: int):
     row = project_repo.get_project_by_id(project_id)
 
     if row is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Project not found"
-        )
+        raise ProjectNotFoundException()
 
     if row[1] != user_id:
-        raise HTTPException(
-            status_code=403,
-            detail="You do not own this project"
-        )
+        raise UnauthorizedProjectAccessException()
 
     project_repo.delete_project(project_id)
 

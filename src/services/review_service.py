@@ -1,9 +1,14 @@
-from fastapi import HTTPException
 from src.respositories import project_repo, review_repo
 from src.services import ai_service
 from src.utils.validators import validate_code_size, validate_language
 from src.utils.helpers import format_review_row
 from src.config.constants import MAX_REVIEWS_PER_HOUR
+from src.exceptions.handlers import (
+    ProjectNotFoundException,
+    CodeTooLargeException,
+    UnsupportedFileTypeException,
+    RateLimitExceededException
+)
 
 
 ########################### REVIEW CODE ###########################
@@ -12,32 +17,20 @@ def review_code(project_id: int, filename: str, code: str, user_id: int):
     # Check if project exists
     project = project_repo.get_project_by_id(project_id)
     if project is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Project not found"
-        )
+        raise ProjectNotFoundException()
 
     # Check code size
     if not validate_code_size(code):
-        raise HTTPException(
-            status_code=400,
-            detail="Code exceeds maximum allowed size"
-        )
+        raise CodeTooLargeException()
 
     # Check if language is supported
     if not validate_language(filename):
-        raise HTTPException(
-            status_code=400,
-            detail="Unsupported file type"
-        )
+        raise UnsupportedFileTypeException()
 
     # Enforce rate limit — max 5 reviews per hour
     recent_count = review_repo.count_recent_reviews(user_id)
     if recent_count >= MAX_REVIEWS_PER_HOUR:
-        raise HTTPException(
-            status_code=429,
-            detail="Rate limit exceeded. Max 5 reviews per hour."
-        )
+        raise RateLimitExceededException()
 
     # Send code to Gemini for review
     ai_result = ai_service.review_code(code, filename)

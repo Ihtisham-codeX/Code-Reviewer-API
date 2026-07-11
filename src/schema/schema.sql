@@ -44,3 +44,20 @@ CREATE TABLE Reviews (
     REFERENCES Users(user_id)
     ON DELETE CASCADE
 );
+
+-- REFRESH TOKENS TABLE
+-- Stores active refresh tokens for token rotation and revocation.
+-- Each row represents ONE active session. On refresh, the old row is deleted
+-- and a new one is inserted (rotation). On logout, the row is simply deleted.
+CREATE TABLE RefreshTokens (
+    token_id   SERIAL PRIMARY KEY,
+    user_id    INT         NOT NULL,
+    token      TEXT        UNIQUE NOT NULL,
+    expires_at TIMESTAMP   NOT NULL,
+    created_at TIMESTAMP   DEFAULT NOW(),
+
+    CONSTRAINT fk_refresh_token_user
+    FOREIGN KEY (user_id)
+    REFERENCES Users(user_id)
+    ON DELETE CASCADE
+);

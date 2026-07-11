@@ -2,11 +2,12 @@ import os
 
 
 # JWT Settings
-JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
-JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
-# access token used my all middlewares
-JWT_EXPIRE_MINUTES = int(os.getenv("JWT_EXPIRE_MINUTES", 30))
-# refersh token is different , it is used to generate new access token within its time limit
+JWT_SECRET_KEY         = os.getenv("JWT_SECRET_KEY")
+JWT_REFRESH_SECRET_KEY = os.getenv("JWT_REFRESH_SECRET_KEY")   # separate secret for refresh tokens
+JWT_ALGORITHM          = os.getenv("JWT_ALGORITHM")
+# access token used by all middlewares
+JWT_EXPIRE_MINUTES     = int(os.getenv("JWT_EXPIRE_MINUTES", 30))
+# refresh token is different — it generates a new access token within its time limit
 JWT_REFRESH_EXPIRE_DAYS = int(os.getenv("JWT_REFRESH_EXPIRE_DAYS", 7))
 
 # Gemini AI
