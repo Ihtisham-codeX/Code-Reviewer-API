@@ -7,7 +7,7 @@ from src.utils.helpers import parse_ai_response
 genai.configure(api_key=settings.GEMINI_API_KEY)
 
 # Load the model once
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-3.1-flash-lite")
 
 
 def review_code(code: str, filename: str) -> dict:

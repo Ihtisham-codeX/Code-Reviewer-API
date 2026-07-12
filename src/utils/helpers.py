@@ -23,8 +23,8 @@ def format_review_row(row) -> dict:
         "readability": row[5],
         "accuracy": row[6],
         "best_practices": row[7],
-        "bugs": json.loads(row[8]) if row[8] else [],
+        "bugs": row[8] if row[8] else [],
         "security": row[9],
-        "suggestions": json.loads(row[10]) if row[10] else [],
+        "suggestions": row[10] if row[10] else [],
         "optimized_code": row[11]
     }
