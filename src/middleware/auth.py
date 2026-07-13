@@ -39,4 +39,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 content={"detail": "Invalid or Expired Token"}
             )
 
+        # Attach the verified user payload to request state so Depends(get_current_user) can read it
+        request.state.user = payload
+
         return await call_next(request)

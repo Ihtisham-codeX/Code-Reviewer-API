@@ -15,6 +15,7 @@ from src.routers.user import router as user_router
 
 # Middleware
 from src.middleware.logging import LoggingMiddleware
+from src.middleware.auth import AuthMiddleware
 
 # Create FastAPI app
 app = FastAPI(
@@ -23,6 +24,7 @@ app = FastAPI(
 
 # Register middleware
 app.add_middleware(LoggingMiddleware)
+app.add_middleware(AuthMiddleware)
 
 # Register routers
 app.include_router(auth_router)
