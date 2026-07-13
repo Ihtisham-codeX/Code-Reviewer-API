@@ -1,10 +1,12 @@
 from pydantic import BaseModel
+from src.utils.enums import AIProvider
 
 
 class ReviewRequest(BaseModel):
     project_id: int
     filename: str
     code: str
+    provider: AIProvider = AIProvider.GEMINI
 
 class ReviewResponse(BaseModel):
     review_id: int

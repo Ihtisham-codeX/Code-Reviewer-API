@@ -16,7 +16,7 @@ def save_refresh_token(user_id: int, token: str, expires_at):
 def find_refresh_token(token: str):
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT token_id, user_id, token, expires_at, revoked
+        SELECT token_id, user_id, token, expires_at, created_at
         FROM RefreshTokens
         WHERE token = %s
     """, (token,))

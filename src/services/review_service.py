@@ -1,5 +1,5 @@
 from src.respositories import project_repo, review_repo
-from src.services import ai_service
+from src.services.ai import gemini_service
 from src.utils.validators import validate_code_size, validate_language
 from src.utils.helpers import format_review_row
 from src.config.constants import MAX_REVIEWS_PER_HOUR
@@ -9,10 +9,12 @@ from src.exceptions.handlers import (
     UnsupportedFileTypeException,
     RateLimitExceededException
 )
+from src.services.ai.ai_factory_pattern import AIFactory
+from src.utils.enums import AIProvider
 
 
 ########################### REVIEW CODE ###########################
-def review_code(project_id: int, filename: str, code: str, user_id: int):
+def review_code(project_id: int, filename: str, code: str, user_id: int , provider : AIProvider = AIProvider.GEMINI ):
 
     # Check if project exists
     project = project_repo.get_project_by_id(project_id)
@@ -32,7 +34,9 @@ def review_code(project_id: int, filename: str, code: str, user_id: int):
     if recent_count >= MAX_REVIEWS_PER_HOUR:
         raise RateLimitExceededException()
 
-    # Send code to Gemini for review
+    # Send code to ai factory that will select the provider based on request for review
+    ai_service = AIFactory.get_ai(provider)
+
     ai_result = ai_service.review_code(code, filename)
 
     # Save review to database
